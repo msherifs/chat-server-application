@@ -59,6 +59,6 @@ public class Client extends Thread{
 
     @Override
     public String toString() {
-        return this.userId + "," + this.listenPort + "," + socket.getInetAddress().getHostName();
+        return this.userId + "," + this.listenPort + "," + socket.getInetAddress().g;
     }
 }
