@@ -21,9 +21,13 @@ public class Main {
         while(true) {
             Socket client = s.accept();
             System.out.println(client.getPort());
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            int portNumber = Integer.parseInt(in.readLine());
 //            OutputStream outputStream = client.getOutputStream();
 //            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            Main.CURRENT_USERS.add(new Client(client));
+            Client cc = new Client(client, portNumber);
+            cc.start();
+            Main.CURRENT_USERS.add(cc);
 //            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 //            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 //            out.write("Welcome to HELL\n");
