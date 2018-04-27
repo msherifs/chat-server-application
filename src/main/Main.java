@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static ArrayList<Client> CURRENT_USERS = new ArrayList<Client>();
+    public static ArrayList<GroupChat> AVAILABLE_GROUPCHATS = new ArrayList<>();
     public static void main(String[] args) {
         try{
             ServerSocket ss = new ServerSocket(50000);
@@ -22,22 +23,16 @@ public class Main {
             Socket client = s.accept();
             System.out.println(client.getPort());
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            int portNumber = Integer.parseInt(in.readLine());
-//            OutputStream outputStream = client.getOutputStream();
-//            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            Client cc = new Client(client, portNumber);
+
+            String initConnection = in.readLine();
+            System.out.println(initConnection);
+            String[] parsedInitUser = initConnection.split(";");
+
+            User connectedUser = new User(parsedInitUser[0], parsedInitUser[1], parsedInitUser[2], parsedInitUser[3]);
+
+            Client cc = new Client(client, connectedUser);
             cc.start();
             Main.CURRENT_USERS.add(cc);
-//            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-//            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-//            out.write("Welcome to HELL\n");
-//            out.flush();
-//            System.out.println("END");
-//            for (Client c:
-//                 Main.CURRENT_USERS) {
-//                c.sendMessage("Hello\n");
-//                c.sendMessage("EQEQ\n");
-//            }
         }
     }
 

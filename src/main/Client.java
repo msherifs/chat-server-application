@@ -6,22 +6,23 @@ import java.net.Socket;
 public class Client extends Thread{
 
     private Socket socket;
-    private String listenPort;
     private BufferedReader in;
     private BufferedWriter out;
-    private static int id = 0;
-    private int userId;
-    public Client(Socket socket, int listenPort) {
+    private User user;
+
+    public Client(Socket socket, User user) {
         try {
             this.socket = socket;
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
-            this.userId = Client.id;
-            Client.id++;
-            this.listenPort = listenPort + "";
+            this.user = user;
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public int getUserId() {
+        return this.user.getIdNumber();
     }
 
     public void sendMessage(String s) throws IOException {
@@ -33,25 +34,21 @@ public class Client extends Thread{
         return socket;
     }
 
-    public String getListenPort() {
-        return listenPort;
-    }
-
-    public void setListenPort(String listenPort) {
-        this.listenPort = listenPort;
-    }
-
     @Override
     public void run() {
-        while(true) {
+        while(!Thread.currentThread().isInterrupted()) {
             try{
                 String s = in.readLine();
                 if (s.equals("info")) {
-                    out.write(Main.getAvailableClients() + "\n");
+                    String av = Main.getAvailableClients();
+                    System.out.println(av);
+                    out.write(av + "\n");
                     out.flush();
                 }
             } catch (Exception e){
-                e.printStackTrace();
+//                e.printStackTrace();
+                System.out.println("User Disconnected! ID: " + this.getUserId());
+                Thread.currentThread().interrupt();
             }
 
         }
@@ -59,6 +56,6 @@ public class Client extends Thread{
 
     @Override
     public String toString() {
-        return this.userId + "," + this.listenPort + "," + socket.getInetAddress().g;
+        return "" + this.user;
     }
 }
