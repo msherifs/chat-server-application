@@ -44,4 +44,24 @@ public class Main {
         }
         return s;
     }
+
+    public static String getAvailableGroups(){
+        String s = "";
+        for (GroupChat gc: Main.AVAILABLE_GROUPCHATS){
+            s += gc + ";";
+        }
+        return s;
+    }
+
+    public static void joinGroup(int id, Client c){
+        try{
+            Main.AVAILABLE_GROUPCHATS.get(id).addClient(c);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void createGroupChat(String chatName){
+        Main.AVAILABLE_GROUPCHATS.add(new GroupChat(chatName));
+    }
 }

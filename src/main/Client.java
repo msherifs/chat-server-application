@@ -26,7 +26,7 @@ public class Client extends Thread{
     }
 
     public void sendMessage(String s) throws IOException {
-        out.write(s);
+        out.write(s + "\n");
         out.flush();
     }
 
@@ -39,16 +39,30 @@ public class Client extends Thread{
         while(!Thread.currentThread().isInterrupted()) {
             try{
                 String s = in.readLine();
-                if (s.equals("info")) {
+                if (s.equals("clients_online")) {
                     String av = Main.getAvailableClients();
                     System.out.println(av);
                     out.write(av + "\n");
                     out.flush();
+                } else if (s.equals("group_join")){
+                    int ss = Integer.parseInt(in.readLine());
+                    Main.joinGroup(ss, this);
+                } else if(s.equals("group_msg")){
+                    String ss = in.readLine();
+                    String[] grpMsg = ss.split(";");
+                    Main.AVAILABLE_GROUPCHATS.get(Integer.parseInt(grpMsg[0])).broadcast(grpMsg[1]);
+                } else if(s.equals("group_available")) {
+                    out.write(Main.getAvailableGroups() + "\n");
+                    out.flush();
+                } else if(s.equals("group_create")){
+                    String ss = in.readLine();
+                    Main.createGroupChat(ss);
                 }
             } catch (Exception e){
 //                e.printStackTrace();
                 System.out.println("User Disconnected! ID: " + this.getUserId());
                 Thread.currentThread().interrupt();
+                Main.CURRENT_USERS.remove(this);
             }
 
         }
