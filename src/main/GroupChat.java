@@ -18,6 +18,7 @@ public class GroupChat {
         for (Client cl:
              chatClients) {
             try {
+                System.out.println("sending" + s + "to " + cl);
                 cl.sendMessage(s);
             }catch (Exception e){
                 e.printStackTrace();
@@ -26,11 +27,16 @@ public class GroupChat {
     }
 
     public void addClient(Client c) {
+        System.out.println("In ADD CLIENT !");
         chatClients.add(c);
     }
 
     @Override
     public String toString() {
         return groupId + "," + chatName;
+    }
+
+    public int getGroupId() {
+        return groupId;
     }
 }

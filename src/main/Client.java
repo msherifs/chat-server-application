@@ -39,10 +39,20 @@ public class Client extends Thread{
         while(!Thread.currentThread().isInterrupted()) {
             try{
                 String s = in.readLine();
+                System.out.println(s);
                 if (s.equals("clients_online")) {
-                    String av = Main.getAvailableClients();
-                    System.out.println(av);
-                    out.write(av + "\n");
+
+                    String av = "";
+                    for (Client c :
+                            Main.CURRENT_USERS) {
+                        if (c.equals(this)) {
+                            continue;
+                        }
+                        av += c.toString() + ";";
+                    }
+
+                    System.out.println("CCC" + av);
+                    out.write("clients_online%" + av + "\n");
                     out.flush();
                 } else if (s.equals("group_join")){
                     int ss = Integer.parseInt(in.readLine());
@@ -50,21 +60,54 @@ public class Client extends Thread{
                 } else if(s.equals("group_msg")){
                     String ss = in.readLine();
                     String[] grpMsg = ss.split(";");
-                    Main.AVAILABLE_GROUPCHATS.get(Integer.parseInt(grpMsg[0])).broadcast(grpMsg[1]);
+                    for (GroupChat gc :
+                            Main.AVAILABLE_GROUPCHATS) {
+                        System.out.println("SDAQQR!#R!#R@#R@!#R" + ss);
+                        if (gc.getGroupId() == Integer.parseInt(grpMsg[0])) {
+                            System.out.println("Broadcasting");
+                            gc.broadcast("group_msg%" + gc.getGroupId() + "," + grpMsg[1] + "," + grpMsg[2]);
+                        }
+                    }
+//                    Main.AVAILABLE_GROUPCHATS.get(Integer.parseInt(grpMsg[0])).broadcast(grpMsg[1]);
                 } else if(s.equals("group_available")) {
-                    out.write(Main.getAvailableGroups() + "\n");
+                    out.write("group_available%" + Main.getAvailableGroups() + "\n");
                     out.flush();
                 } else if(s.equals("group_create")){
                     String ss = in.readLine();
+                    System.out.println(ss);
                     Main.createGroupChat(ss);
+                } else if(s.equals("change_status")){
+                    user.setStatus(in.readLine());
                 }
             } catch (Exception e){
-//                e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("User Disconnected! ID: " + this.getUserId());
                 Thread.currentThread().interrupt();
                 Main.CURRENT_USERS.remove(this);
             }
 
+        }
+    }
+
+    public void sendOnlineStatus(){
+        try{
+            String av = "";
+            for (Client c :
+                    Main.CURRENT_USERS) {
+                if (c.equals(this)) {
+                    continue;
+                }
+                av += c.toString() + ";";
+            }
+
+            System.out.println(av);
+            out.write("clients_online%" + av + "\n");
+            out.flush();
+            out.write("group_available%" + Main.getAvailableGroups() + "\n");
+            out.flush();
+            System.out.println("FLUSHED");
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
