@@ -31,6 +31,9 @@ public class GroupChat {
         chatClients.add(c);
     }
 
+    public void removeClient(Client c){
+        chatClients.remove(c);
+    }
     @Override
     public String toString() {
         return groupId + "," + chatName;

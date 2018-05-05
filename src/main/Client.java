@@ -45,7 +45,11 @@ public class Client extends Thread{
                     String av = "";
                     for (Client c :
                             Main.CURRENT_USERS) {
+                        System.out.println("DEEQQQQQQQQ" + c.user);
                         if (c.equals(this)) {
+                            continue;
+                        }
+                        if (c.user.getName().equals("admoon")){
                             continue;
                         }
                         av += c.toString() + ";";
@@ -78,6 +82,18 @@ public class Client extends Thread{
                     Main.createGroupChat(ss);
                 } else if(s.equals("change_status")){
                     user.setStatus(in.readLine());
+                } else if (s.equals("group_leave")){
+                    int ss = Integer.parseInt(in.readLine());
+                    Main.leaveGroup(ss, this);
+                    out.write("group_leave%" + ss + "\n");
+                    out.flush();
+                } else if (s.equals("kick_client")){
+                    int ss = Integer.parseInt(in.readLine());
+                    for(Client c:Main.CURRENT_USERS){
+                        if(c.getUserId() == ss){
+                            c.sendMessage("kick%out");
+                        }
+                    }
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -95,6 +111,9 @@ public class Client extends Thread{
             for (Client c :
                     Main.CURRENT_USERS) {
                 if (c.equals(this)) {
+                    continue;
+                }
+                if (c.user.getName().equals("admoon")){
                     continue;
                 }
                 av += c.toString() + ";";

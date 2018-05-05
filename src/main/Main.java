@@ -80,6 +80,21 @@ public class Main {
         }
     }
 
+    public static void leaveGroup(int id, Client c){
+        try{
+//            Main.AVAILABLE_GROUPCHATS.get(id).addClient(c);
+            for (GroupChat gc :
+                    Main.AVAILABLE_GROUPCHATS) {
+                if (gc.getGroupId() == id) {
+                    gc.removeClient(c);
+                    return;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public static void createGroupChat(String chatName){
         Main.AVAILABLE_GROUPCHATS.add(new GroupChat(chatName));
     }
